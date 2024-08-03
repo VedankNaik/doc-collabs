@@ -11,26 +11,22 @@ export const createDocument = async ({
   email,
 }: CreateDocumentParams) => {
   const roomId = nanoid();
-
   try {
     const metadata = {
       creatorId: userId,
       email,
       title: "Untitled",
     };
-
     const usersAccesses: RoomAccesses = {
       [email]: ["room:write"],
     };
-
     const room = await liveblocks.createRoom(roomId, {
       metadata,
       usersAccesses,
-      defaultAccesses: [],
+      defaultAccesses: ["room:write"],
     });
 
     revalidatePath("/");
-
     return parseStringify(room);
   } catch (error) {
     console.log(`Error happened while creating a room: ${error}`);
@@ -46,13 +42,10 @@ export const getDocument = async ({
 }) => {
   try {
     const room = await liveblocks.getRoom(roomId);
-
-    const hasAccess = Object.keys(room.usersAccesses).includes(userId);
-
-    if (!hasAccess) {
-      throw new Error("You do not have access to this document");
-    }
-
+    // const hasAccess = Object.keys(room.usersAccesses).includes(userId);
+    // if (!hasAccess) {
+    //   throw new Error("You do not have access to this document");
+    // }
     return parseStringify(room);
   } catch (error) {
     console.log(`Error happened while getting a room: ${error}`);
@@ -66,9 +59,7 @@ export const updateDocument = async (roomId: string, title: string) => {
         title,
       },
     });
-
     revalidatePath(`/documents/${roomId}`);
-
     return parseStringify(updatedRoom);
   } catch (error) {
     console.log(`Error happened while updating a room: ${error}`);
@@ -78,7 +69,6 @@ export const updateDocument = async (roomId: string, title: string) => {
 export const getDocuments = async (email: string) => {
   try {
     const rooms = await liveblocks.getRooms({ userId: email });
-
     return parseStringify(rooms);
   } catch (error) {
     console.log(`Error happened while getting rooms: ${error}`);
@@ -95,14 +85,11 @@ export const updateDocumentAccess = async ({
     const usersAccesses: RoomAccesses = {
       [email]: getAccessType(userType) as AccessType,
     };
-
     const room = await liveblocks.updateRoom(roomId, {
       usersAccesses,
     });
-
     if (room) {
       const notificationId = nanoid();
-
       await liveblocks.triggerInboxNotification({
         userId: email,
         kind: "$documentAccess",
@@ -117,7 +104,6 @@ export const updateDocumentAccess = async ({
         roomId,
       });
     }
-
     revalidatePath(`/documents/${roomId}`);
     return parseStringify(room);
   } catch (error) {
@@ -134,17 +120,14 @@ export const removeCollaborator = async ({
 }) => {
   try {
     const room = await liveblocks.getRoom(roomId);
-
     if (room.metadata.email === email) {
       throw new Error("You cannot remove yourself from the document");
     }
-
     const updatedRoom = await liveblocks.updateRoom(roomId, {
       usersAccesses: {
         [email]: null,
       },
     });
-
     revalidatePath(`/documents/${roomId}`);
     return parseStringify(updatedRoom);
   } catch (error) {
