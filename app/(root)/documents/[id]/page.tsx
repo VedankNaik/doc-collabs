@@ -6,18 +6,7 @@ import React from "react";
 const Document = () => {
   return (
     <div>
-      <Header className="sticky left-0 top-0">
-        <div className="flex w-fit items-center justify-center gap-2">
-          <p className="document-title">Doc name</p>
-        </div>
-        <SignedOut>
-          <SignInButton />
-        </SignedOut>
-        <SignedIn>
-          <UserButton />
-        </SignedIn>
-      </Header>
-      <Editor />
+      
     </div>
   );
 };
