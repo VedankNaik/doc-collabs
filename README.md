@@ -11,7 +11,6 @@
 ## General info
 
 Built with Next.js, Liveblocks for real-time features, DoCollabs is a realtime document editor.
-Features: Host events, manage yours events, book tickets.
 
 ## Technologies
 
@@ -22,7 +21,7 @@ Features: Host events, manage yours events, book tickets.
 - ShadCN
 - Tailwind CSS
 
-## Technologies
+## Features
 
 - Authentication: User management through Clerk, ensuring secure and efficient authentication.
 - Collaborative Text Editor: Multiple users can edit the same document simultaneously with real-time updates.
